@@ -1,86 +1,122 @@
-📦 Item Correction Management for ERPNext
-Author: Ahmad Zubair Amini
-Repo: Item Correction Management
-ERPNext Compatibility: v14–v15
-License: MIT or Custom (update license.txt)
 
-🧩 Purpose
-This ERPNext module allows users to convert fixed assets (Asset Items) into Stock Items, including:
+# 🧰 Item Correction Management for ERPNext
 
-Updating item flags
+**Author**: Ahmad Zubair Amini  
+**ERPNext Compatibility**: v14 – v15  
+**License**: [MIT](license.txt)  
+**Repository**: [Item-Correction-Management](https://github.com/aogc-afg/Item-Correction-Management.git)
 
-Adjusting GL entries (for Purchase Receipt and Purchase Invoice)
+---
 
-Regenerating stock records
+## 📖 Overview
 
-Ensuring clean deletion of dependent asset data
+This ERPNext module enables seamless conversion of **Asset Items** into **Stock Items**, including:
 
-🚀 Features
-Convert an Item marked as Fixed Asset to Stock Item
+- Automated item flag conversion.
+- Cleanup of asset records (depreciation, movement, etc.).
+- Re-generation of stock ledger and bin records.
+- GL entry corrections for Purchase Receipts and Purchase Invoices.
 
-Clean deletion of asset-related records (Depreciation, Movement, etc.)
+Designed for finance, stock, and asset managers who need to rectify asset misclassification efficiently.
 
-Rebuild Stock Ledger Entry and Bin
+---
 
-Adjust GL Entries for both Purchase Receipt and Purchase Invoice
+## 🚀 Features
 
-Tracks each conversion in the Asset to Stock Processed doctype
+✅ Convert Fixed Asset item to Stock Item  
+✅ Clean deletion of related `Asset`, `Depreciation`, and `Movement` records  
+✅ Regenerates `Stock Ledger Entry` and `Bin` if missing  
+✅ Creates/Updates GL entries for Purchase Receipts and Invoices  
+✅ Tracks processed items to avoid duplication
 
-📄 Doctypes
-1. AssettoStockItemConversion
-Main doctype to initiate the conversion. Submitting this document triggers:
+---
 
-update_asset_to_stock_item(item_name)
+## 🏗️ Doctypes
 
-update_receipt_gl_convert_asset_to_stock(...)
+### 🔹 `AssettoStockItemConversion`
+Main doctype. On submission, it triggers all related functions.
 
-update_invoice_gl_convert_asset_to_stock(...)
+### 🔹 `Asset to Stock Processed`
+Tracking log that stores each processed item to ensure no duplication.
 
-2. Asset to Stock Processed
-Internal log to prevent re-processing the same item multiple times.
+---
 
-⚙️ Core Functions
-Function	Location	Description
-update_asset_to_stock_item(item_name)	AssettoStockItemConversion	Updates item flags, deletes asset records, inserts SLE and BIN
-update_receipt_gl_convert_asset_to_stock(item_name, category, account)	same	Adjusts GL entries for Purchase Receipt
-update_invoice_gl_convert_asset_to_stock(item_name, category, account)	same	Adjusts GL entries for Purchase Invoice
-recalculate_stock_valuation(item_code)	same	Recomputes valuation rate and stock value for each SLE
+## ⚙️ Core Functions
 
-🛠️ Developer Notes
-GL accounts like "Stock In Hand - AOGC" and "Asset Received But Not Billed - AOGC" are hardcoded. Consider making them dynamic via custom settings.
+| Function | Purpose |
+|----------|---------|
+| `update_asset_to_stock_item(item_name)` | Converts item, deletes asset records, inserts stock ledger & bin entries |
+| `update_receipt_gl_convert_asset_to_stock(item, category, account)` | Adjusts GL entries for Purchase Receipts |
+| `update_invoice_gl_convert_asset_to_stock(item, category, account)` | Adjusts GL entries for Purchase Invoices |
+| `recalculate_stock_valuation(item_code)` | Recomputes valuation rate and stock value per warehouse |
 
-Safe update mode is disabled temporarily using SET SQL_SAFE_UPDATES = 0 – ensure your MySQL settings allow it.
+---
 
-Avoids double entry by logging processed items into the tracking doctype.
+## 🔧 Setup & Installation
 
-The module does not handle serial numbers or batch splits – this can be expanded.
-
-Multi-company logic is assumed via the company field on transactions. Test in multi-tenant setups.
-
-🔧 Setup & Installation
-bash
-Copy
-Edit
-# Inside your bench
-cd apps/
+```bash
+# Step 1: Clone the repository
+cd ~/frappe-bench/apps/
 git clone https://github.com/aogc-afg/Item-Correction-Management.git item_correction_management
-cd ..
-bench --site yoursite install-app item_correction_management
+
+# Step 2: Install the app on your site
+cd ~/frappe-bench/
+bench --site your-site-name install-app item_correction_management
+
+# Step 3: Apply changes
 bench migrate
-📌 To-Do & Future Improvements
- Make GL account names configurable from settings
+````
 
- Add test coverage
+---
 
- Add UI-level validations (e.g., confirm deletion warnings)
+## 🧑‍💻 Developer Notes
 
- Add permissions and role-based access control
+* ⚠️ GL Accounts such as `"Stock In Hand - AOGC"` are hardcoded. Consider replacing with dynamic configuration or system settings.
+* ✅ Safe updates are temporarily disabled via `SET SQL_SAFE_UPDATES = 0`.
+* 🔄 The process avoids re-processing by logging completed items in `Asset to Stock Processed`.
+* 🔍 Serial number and batch tracking are not handled yet.
+* 🏢 Multi-company support is partially included through company-based filters.
 
- Improve error handling with rollback visibility
+---
 
- Add hooks to auto-validate item eligibility
+## 🧪 To-Do / Enhancements
 
-🤝 Contributing
-Pull requests are welcome. Please open an issue first to discuss major changes.
-Ensure you test thoroughly in a development environment before proposing a change.
+* [ ] Dynamic account configuration via `Custom Settings`
+* [ ] Add unit testing and test cases
+* [ ] Improve user interface and error messages
+* [ ] Add permission control based on roles
+* [ ] Integrate with Asset Disposal logic
+* [ ] Extend support for serial/batch tracked items
 
+---
+
+## 🤝 Contributing
+
+We welcome all contributors! Please fork the repository and submit a pull request with your proposed changes.
+For major features or improvements, open an issue first to discuss your ideas.
+
+---
+
+## 📬 Support
+
+For bug reports, feature requests, or consultations, reach out to:
+📧 **[zubairamini.cs@gmail.com](mailto:zubairamini.cs@gmail.com)**
+🌐 [LinkedIn](https://www.linkedin.com/in/ahmad-zubair-amini-b45075182) (optional)
+
+---
+
+## 📄 License
+
+This project is licensed under the terms of the [MIT license](license.txt).
+
+---
+
+```
+
+---
+
+### ✅ Next Steps:
+- Save this content as your `README.md` inside the app's root folder.
+- Optionally, add badges for GitHub stars, forks, license, etc., if you want a more public-facing polish.
+- If you'd like a **Pashto or Dari version**, I can translate it as well.
+```
